@@ -6,6 +6,24 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
+  //add submit functionality for sending emails
+  document.querySelector('#compose-form').onsubmit = function() {
+    fetch('/emails', {
+      method: 'POST',
+      body: JSON.stringify({
+          recipients: document.querySelector('#compose-recipients').value,
+          subject: document.querySelector('#compose-subject').value,
+          body: document.querySelector('#compose-body').value
+      })
+    })
+    .then(response => response.json())
+    .then(result => {
+        // Print result
+        console.log(result);
+        load_mailbox('sent');
+    });
+  }
+
   // By default, load the inbox
   load_mailbox('inbox');
 });
@@ -22,6 +40,7 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
@@ -30,4 +49,31 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+
+  fetch('/emails/' + mailbox)
+  .then(response => response.json())
+  .then(result => {
+      // Print result
+      console.log(result);
+      for(key in result){
+        email = result[key]
+        isRead = email.read ? "read" : "unread";
+        console.log(email)
+        document.querySelector('#emails-view').innerHTML += `
+        <div class="email-item-${isRead}">
+
+          <div><div><h4>From: </h4></div><div><p>${email.sender}</p></div></div>
+          <div><h4>To: </h4><p>${email.recipients}</p></div>
+          <div><h4>Subject: </h4><p>${email.subject}</p></div>
+          <div><h4>Timestamp: </h4><p>${email.timestamp}</p></div>
+
+        </div>
+        <hr>`;
+      }
+
+  }).catch((err) => console.log(err));
+    
+
+
 }

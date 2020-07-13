@@ -58,12 +58,15 @@ function load_mailbox(mailbox) {
       console.log(result);
       for(key in result){
         email = result[key]
+        isRead = email.read ? "read" : "unread";
         console.log(email)
         document.querySelector('#emails-view').innerHTML += `
+        <div class="email-item-${isRead}">
           <div><div><h4>From: </h4></div><div><p>${email.sender}</p></div></div>
           <div><h4>To: </h4><p>${email.recipients}</p></div>
           <div><h4>Subject: </h4><p>${email.subject}</p></div>
           <div><h4>Timestamp: </h4><p>${email.timestamp}</p></div>
+        </div>
         <hr>`;
       }
 

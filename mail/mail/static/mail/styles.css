@@ -1,3 +1,15 @@
 textarea {
     min-height: 400px;
 }
+
+.email-item-unread {
+    border: black;
+    border-width: 1px;
+    background-color: white;
+}
+
+.email-item-read {
+    border: black;
+    border-width: 1px;
+    background-color: grey;
+}
