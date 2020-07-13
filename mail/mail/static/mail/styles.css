@@ -3,13 +3,19 @@ textarea {
 }
 
 .email-item-unread {
-    border: black;
+    border-color: black;
     border-width: 1px;
     background-color: white;
+    border-style: solid;
 }
 
 .email-item-read {
     border: black;
     border-width: 1px;
     background-color: grey;
+    border-style: solid;
+}
+
+.email {
+    background-color: white;
 }
