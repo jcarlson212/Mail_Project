@@ -46,6 +46,20 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+const reply = (email) => {
+  compose_email()
+  document.querySelector('#compose-recipients').value = [email.sender];
+  document.querySelector('#compose-subject').value = 'Re: ' + email.subject;
+  document.querySelector('#compose-body').value = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+}
+
+const createReplyButton = (email) => {
+  const replyButton = document.createElement("button")
+  replyButton.innerHTML = "Reply";
+  replyButton.onclick = () => reply(email);
+  return replyButton;
+}
+
 const viewEmail = (id, giveArchiveOptions) => {
   console.log(id)
   console.log(giveArchiveOptions)
@@ -65,7 +79,9 @@ const viewEmail = (id, giveArchiveOptions) => {
         <div><h4>Body: </h4><p>${email.body}</p></div>
     </div>
     `
-    
+
+    const replyButton = createReplyButton(email)
+    document.querySelector('#email-view').append(replyButton)
     if(giveArchiveOptions){
       let newNode = null;
   
