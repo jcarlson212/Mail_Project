@@ -15,3 +15,7 @@ textarea {
     background-color: grey;
     border-style: solid;
 }
+
+.email {
+    background-color: white;
+}

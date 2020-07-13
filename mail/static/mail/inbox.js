@@ -50,13 +50,56 @@ const viewEmail = (id) => {
   console.log(id)
   fetch('/emails/' + id)
   .then(response => response.json())
-  .then(result => {
-    console.log(result)
+  .then(email => {
+    console.log(email)
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'none';
     document.querySelector('#email-view').style.display = 'block';
-    document.querySelector('#email-view').innerHTML = result.body
-  }).catch((err) => console.log(err));
+    document.querySelector('#email-view').innerHTML = `
+    <div class="email">
+        <div><div><h4>From: </h4></div><div><p>${email.sender}</p></div></div>
+        <div><h4>To: </h4><p>${email.recipients}</p></div>
+        <div><h4>Subject: </h4><p>${email.subject}</p></div>
+        <div><h4>Timestamp: </h4><p>${email.timestamp}</p></div>
+        <div><h4>Body: </h4><p>${email.body}</p></div>
+    </div>
+    `
+    let newNode = null;
+  
+    if(email.archived == false){
+      //create a archive button
+      newNode = document.createElement('button');
+      newNode.isArchive = false;
+    }else{
+      //create a un-archive button
+      newNode = document.createElement('button');
+      newNode.isArchive = true;
+    }
+    newNode.onclick = () => {
+      console.log("clicked1")
+      fetch(`/emails/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          archived: !newNode.isArchive
+        })
+      })
+      if(newNode.isArchive){
+        newNode.isArchive = false;
+        newNode.innerHTML = "Archive";
+      }else{
+        newNode.isArchive = true;
+        newNode.innerHTML = "Un-archive";
+      }
+    }
+    newNode.innerHTML = newNode.isArchive ? "Un-archive" : "Archive";
+    document.querySelector('#email-view').append(newNode)
+  })
+  .then(fetch(`/emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: true
+    })
+  })).catch((err) => console.log(err));
 }
 
 function load_mailbox(mailbox) {
