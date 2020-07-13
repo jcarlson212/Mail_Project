@@ -5,6 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
+  const element = document.createElement('div');
+  element.innerHTML = '';
+  element.id = "email-view";
+  element.style.display = "none";
+  document.querySelector('.container').append(element);
 
   //add submit functionality for sending emails
   document.querySelector('#compose-form').onsubmit = function() {
@@ -33,6 +38,7 @@ function compose_email() {
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  document.querySelector('#email-view').style.display = 'none';
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
@@ -40,12 +46,25 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+const viewEmail = (id) => {
+  console.log(id)
+  fetch('/emails/' + id)
+  .then(response => response.json())
+  .then(result => {
+    console.log(result)
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'none';
+    document.querySelector('#email-view').style.display = 'block';
+    document.querySelector('#email-view').innerHTML = result.body
+  }).catch((err) => console.log(err));
+}
 
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -61,11 +80,11 @@ function load_mailbox(mailbox) {
         isRead = email.read ? "read" : "unread";
         console.log(email)
         document.querySelector('#emails-view').innerHTML += `
-        <div class="email-item-${isRead}">
-          <div><div><h4>From: </h4></div><div><p>${email.sender}</p></div></div>
-          <div><h4>To: </h4><p>${email.recipients}</p></div>
-          <div><h4>Subject: </h4><p>${email.subject}</p></div>
-          <div><h4>Timestamp: </h4><p>${email.timestamp}</p></div>
+        <div class="email-item-${isRead}" onclick="viewEmail(${email.id})">
+            <div><div><h4>From: </h4></div><div><p>${email.sender}</p></div></div>
+            <div><h4>To: </h4><p>${email.recipients}</p></div>
+            <div><h4>Subject: </h4><p>${email.subject}</p></div>
+            <div><h4>Timestamp: </h4><p>${email.timestamp}</p></div>
         </div>
         <hr>`;
       }
