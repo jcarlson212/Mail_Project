@@ -1,17 +1,3 @@
 textarea {
     min-height: 400px;
 }
-.container {
-    width: 400px;
-    background: black;
-    white-space: nowrap;
-    overflow: scroll;
-}
-
-.container > div {
-height: 50px;
-width: 100px;
-background: #555;
-display: inline-block;
-margin: 10px;
-}

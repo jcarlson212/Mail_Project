@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(result => {
         // Print result
         console.log(result);
+        load_mailbox('sent');
     });
   }
 
@@ -50,7 +51,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
 
-  fetch('/emails/inbox')
+  fetch('/emails/' + mailbox)
   .then(response => response.json())
   .then(result => {
       // Print result
@@ -59,15 +60,15 @@ function load_mailbox(mailbox) {
         email = result[key]
         console.log(email)
         document.querySelector('#emails-view').innerHTML += `
-          <div class=\"container\"><div><h4>From: </h4></div><div><p>${email.sender}</p></div></div>
-          <div class=\"container\"><h4>To: </h4><p>${email.recipients}</p></div>
-          <div class=\"container\"><h4>Subject: </h4><p>${email.subject}</p></div>
-          <div class=\"container\"><h4>Timestamp: </h4><p>${email.timestamp}</p></div>
+          <div><div><h4>From: </h4></div><div><p>${email.sender}</p></div></div>
+          <div><h4>To: </h4><p>${email.recipients}</p></div>
+          <div><h4>Subject: </h4><p>${email.subject}</p></div>
+          <div><h4>Timestamp: </h4><p>${email.timestamp}</p></div>
         <hr>`;
       }
 
   }).catch((err) => console.log(err));
-     
+    
 
 
 }
